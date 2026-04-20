@@ -66,5 +66,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
+	<!-- Usage of the GPS -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>L'app necessita del GPS per tracciare il tuo percorso durante l'allenamento.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>L'app traccia il percorso anche in background per non interrompere l'allenamento.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>L'app traccia il percorso anche in background per non interrompere l'allenamento.</string>
 </dict>
 </plist>
