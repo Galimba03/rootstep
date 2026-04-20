@@ -1,15 +1,15 @@
-# 🏃‍♂️ OpenTracker: The Community-Driven Running App
+# 🏃‍♂️ RootStep: The Community-Driven Running App
 
 [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
 [![OpenStreetMap](https://img.shields.io/badge/OpenStreetMap-%237EBC6F.svg?style=for-the-badge&logo=OpenStreetMap&logoColor=white)](https://www.openstreetmap.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-**OpenTracker** is a fully Open Source fitness tracking app, born for runners who want full control over their data. No subscriptions, no invasive tracking—just you and the road.
+**RootStep** is a fully Open Source fitness tracking app, born for runners who want full control over their data. No subscriptions, no invasive tracking—just you and the road.
 
 ---
 
-## ✨ Why OpenTracker?
+## ✨ Why RootStep?
 The goal is to create a transparent alternative to commercial apps, offering a modern tech stack and an inclusive community.
 
 - 📍 **Live Tracking:** Precise GPS-based monitoring.
