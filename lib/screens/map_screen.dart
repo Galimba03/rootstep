@@ -19,6 +19,8 @@ class _MapScreenState extends State<MapScreen> {
   HiveCacheStore? _cacheStore;
   bool _isFirstLocationUpdate = true;
 
+  final List<LatLng> _routePoints = []; // Route points
+
   @override
   void initState() {
     super.initState();
@@ -51,16 +53,19 @@ class _MapScreenState extends State<MapScreen> {
     Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: 10, // Update every 10 meters
+        distanceFilter: 5, // Update every 5 meters
       ),
     ).listen((Position position) {
       if (mounted) {
         setState(() {
           _currentPosition = LatLng(position.latitude, position.longitude);
+
+          // Updating route. Add a new point to the list '_routePoints'
+          _routePoints.add(_currentPosition!);
           
           // If it is the first signal, move the pointer to the real point
           if (_isFirstLocationUpdate) {
-            _mapController.move(_currentPosition!, 15.0);
+            _mapController.move(_currentPosition!, 16.0);
             _isFirstLocationUpdate = false;
           }
         });
@@ -84,11 +89,25 @@ class _MapScreenState extends State<MapScreen> {
           initialZoom: 15.0,
         ),
         children: [
+          // LAYER 1: The map
           TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'com.galimba.rootstep_app',
             tileProvider: CachedTileProvider(store: _cacheStore!),
           ),
+
+          // LAYER 2: the line of the path (Polyline)
+          PolylineLayer(
+            polylines: [
+              Polyline(
+                points: _routePoints,
+                color: Colors.orange,
+                strokeWidth: 5.0, // line weigth
+              ),
+            ],
+          ),
+
+          // LAYER 3: the point with the current position
           if (_currentPosition != null)
             MarkerLayer(
               markers: [
