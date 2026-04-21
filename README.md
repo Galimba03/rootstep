@@ -1,4 +1,4 @@
-# 🌱 RootStep: The Community-Driven Running App
+# 🌱 RootStep | Privacy-first Open Source Running Tracker built with Flutter.
 
 ![RootStep Banner](assets/img/rootstep_font.png)
 
