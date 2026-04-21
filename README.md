@@ -59,9 +59,9 @@ We are in the early stages and every contribution is valuable! If you want to pa
 5. Open a **Pull Request**.
 
 ### 📋 What we are looking for:
-- [x] **Graphics** A designer or an artist willing to create some graphics.
-- [x] **Data Visualization:** Charts for average pace and elevation.
-- [x] **Background Tasks:** Advanced GPS management when the screen is off.
+- [ ] **Graphics** A designer or an artist willing to create some graphics.
+- [ ] **Data Visualization:** Charts for average pace and elevation.
+- [ ] **Background Tasks:** Advanced GPS management when the screen is off.
 - [ ] **Dark Mode:** Support for dark theme.
 
 ---
