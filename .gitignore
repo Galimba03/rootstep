@@ -27,3 +27,14 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+.idea/
+*.iml
+
+# For MacBook
+**/.DS_Store
+
+# Crashlytics/Firebase logs
+ios/DerivedData/
+*.log
+*.crash
