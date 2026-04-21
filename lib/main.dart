@@ -11,10 +11,10 @@ class FitnessApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Open Tracker',
+      title: 'Root Step',
       debugShowCheckedModeBanner: false, // Removes the 'debug' badge in the top-right corner
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
       home: const HomeScreen(), // The first screen

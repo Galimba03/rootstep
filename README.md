@@ -1,5 +1,7 @@
 # 🏃‍♂️ RootStep: The Community-Driven Running App
 
+![RootStep Banner](assets/img/rootstep_font.png)
+
 [![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
 [![OpenStreetMap](https://img.shields.io/badge/OpenStreetMap-%237EBC6F.svg?style=for-the-badge&logo=OpenStreetMap&logoColor=white)](https://www.openstreetmap.org)
@@ -16,6 +18,13 @@ The goal is to create a transparent alternative to commercial apps, offering a m
 - 🗺️ **Offline Maps:** Powered by `flutter_map` and advanced caching, your maps are always available.
 - 🛡️ **Privacy by Design:** No data is sent to external servers without your explicit consent.
 - 🔋 **Battery Efficient:** Optimized to last through your longest marathons.
+
+---
+
+## 📱 Screenshots
+| Home Screen | Live Tracking |
+| :---: | :---: |
+| <img src="assets/readme/rootstep_homepage.png" width="250"> | <img src="assets/readme/rootstep_running.png" width="250"> |
 
 ---
 
@@ -50,6 +59,7 @@ We are in the early stages and every contribution is valuable! If you want to pa
 5. Open a **Pull Request**.
 
 ### 📋 What we are looking for:
+- [ ] **Graphics** A designer or an artist willing to create some graphics.
 - [ ] **Data Visualization:** Charts for average pace and elevation.
 - [ ] **Background Tasks:** Advanced GPS management when the screen is off.
 - [ ] **Polyline Logic:** Implementation of path drawing on the map.
@@ -61,9 +71,11 @@ We are in the early stages and every contribution is valuable! If you want to pa
 - [x] Base project and navigation.
 - [x] Real-time Map and GPS integration.
 - [x] Map Caching system.
-- [ ] **(Next)** Path tracking with Polyline.
-- [ ] Stat calculations (Distance, Pace, Calories).
-- [ ] GPX file export.
+- [x] Path tracking with Polyline.
+- [x] Stat calculations (Distance, Pace, Calories).
+- [ ] **next** GPX file export.
+- [ ] Better UX/UI.
+- [ ] More features coming soon...
 
 ---
 

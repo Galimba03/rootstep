@@ -19,21 +19,21 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Runner big icon
-            const Icon(
+            Icon(
               Icons.directions_run,
               size: 100,
-              color: Colors.orange,
+              color: Colors.green.shade900,
             ),
             const SizedBox(height: 40),
             
             // Main text
             const Text(
-              'Pronto per la corsa?',
+              'Ready to run?',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             const Text(
-              'Traccia i tuoi progressi in modo open source',
+              'Give it your best!',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.grey),
             ),
@@ -52,11 +52,11 @@ class HomeScreen extends StatelessWidget {
                 },
                 icon: const Icon(Icons.play_arrow),
                 label: const Text(
-                  'INIZIA ALLENAMENTO',
+                  'START WORKOUT',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
+                  backgroundColor: Colors.green.shade900,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
