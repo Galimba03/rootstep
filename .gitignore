@@ -28,13 +28,20 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 
+# IDE and personal configs
 .idea/
 *.iml
+*.ipr
+*.iws
+.vscode/
 
-# For MacBook
+# macOS and file systems
 **/.DS_Store
+.AppleDouble
+.LSOverride
 
 # Crashlytics/Firebase logs
 ios/DerivedData/
+build/
 *.log
 *.crash
