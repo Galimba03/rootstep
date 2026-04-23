@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
-class ControlButtons extends StatelessWidget {
+class ControlButtons extends StatefulWidget {
   final bool isWorkoutActive;
   final bool isPaused;
   final VoidCallback onToggleWorkout;
@@ -15,43 +16,86 @@ class ControlButtons extends StatelessWidget {
   });
 
   @override
+  State<ControlButtons> createState() => _ControlButtonsState();
+}
+
+
+class _ControlButtonsState extends State<ControlButtons> {
+  bool _showHint = false;
+  Timer? _hintTimer;
+
+  void _triggerHint() {
+    _hintTimer?.cancel();
+    setState(() => _showHint = true);
+    
+    // The message disappears after 2 seconds
+    _hintTimer = Timer(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _showHint = false);
+    });
+  }
+
+  @override
+  void dispose() {
+    _hintTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Positioned(
       bottom: 40,
       left: 0,
       right: 0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Occupy only the necessary space
         children: [
-          // Start | Stop | Pause button
-          FloatingActionButton.extended(
-            onPressed: onToggleWorkout,
-            label: Text(
-              !isWorkoutActive ? "START" : (isPaused ? "RESUME" : "PAUSE"),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            icon: Icon(!isWorkoutActive || isPaused ? Icons.play_arrow : Icons.pause),
-            backgroundColor: isPaused ? Colors.green.shade900 : Colors.green.shade600,
-            foregroundColor: Colors.white,
-          ),
-          
-          const SizedBox(width: 20),
-          
-          // Stop button (appears only if the workout is started)
-          // TODO: Center in a better place
-          if (isWorkoutActive)
-            GestureDetector(
-              onLongPress: onStopWorkout,
-              child: const Tooltip(
-                message: "Hold to stop",
-                triggerMode: TooltipTriggerMode.tap,
-                child: CircleAvatar(
-                  radius: 28,
-                  backgroundColor: Colors.red,
-                  child: Icon(Icons.stop, color: Colors.white, size: 30),
+          // TODO: add a better text displayed
+          AnimatedOpacity(
+            opacity: _showHint ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 300),
+            child: const Padding(
+              padding: EdgeInsets.only(bottom: 16.0),
+              child: Text(
+                "Hold for 3 seconds to finish",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
               ),
             ),
+          ),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Button START / PAUSE / RESUME
+              FloatingActionButton.extended(
+                onPressed: widget.onToggleWorkout,
+                label: Text(
+                  !widget.isWorkoutActive ? "START" : (widget.isPaused ? "RESUME" : "PAUSE"),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                icon: Icon(!widget.isWorkoutActive || widget.isPaused ? Icons.play_arrow : Icons.pause),
+                backgroundColor: widget.isPaused ? Colors.green.shade700 : Colors.green.shade900,
+                foregroundColor: Colors.white,
+              ),
+              
+              // Button STOP
+              if (widget.isWorkoutActive && widget.isPaused) ...[
+                const SizedBox(width: 20),
+                GestureDetector(
+                  onTap: _triggerHint, 
+                  onLongPress: widget.onStopWorkout,
+                  child: CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Colors.red,
+                    child: const Icon(Icons.stop, color: Colors.white, size: 30),
+                  ),
+                ),
+              ],
+            ],
+          ),
         ],
       ),
     );

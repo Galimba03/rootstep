@@ -23,8 +23,9 @@ The goal is to create a transparent alternative to commercial apps, offering a m
 
 ## 📱 Screenshots
 | Home Screen | Live Tracking |
-| :---: | :---: |
-| <img src="assets/readme/rootstep_homepage.png" width="250"> | <img src="assets/readme/rootstep_running.png" width="250"> |
+| :---: | :---: | :---: |
+| <img src="assets/readme/rootstep_homepage.png" width="250"> | <img src="assets/readme/rootstep_running.png" width="250"> | img src="assets/readme/rootstep_summary_screen.png" width="250" |
+
 
 ---
 
@@ -59,7 +60,7 @@ We are in the early stages and every contribution is valuable! If you want to pa
 5. Open a **Pull Request**.
 
 ### 📋 What we are looking for:
-- [ ] **Graphics** A designer or an artist willing to create some graphics.
+- [x] **Graphics** A designer or an artist willing to create some graphics.
 - [ ] **Data Visualization:** Charts for average pace and elevation.
 - [ ] **Background Tasks:** Advanced GPS management when the screen is off.
 - [ ] **Dark Mode:** Support for dark theme.
@@ -72,7 +73,10 @@ We are in the early stages and every contribution is valuable! If you want to pa
 - [x] Map Caching system.
 - [x] Path tracking with Polyline.
 - [x] Stat calculations (Distance, Pace, Calories).
-- [ ] **next** GPX file export.
+- [x] Summary screen.
+- [ ] Running Diary.
+- [ ] Updating of the run even with the phone locked.
+- [ ] GPX file export.
 - [ ] Better UX/UI.
 - [ ] More features coming soon...
 

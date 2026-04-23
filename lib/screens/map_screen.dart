@@ -10,6 +10,7 @@ import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_stor
 
 import '../widgets/stats_panel.dart';
 import '../widgets/control_buttons.dart';
+import 'summary_screen.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -230,8 +231,22 @@ class _MapScreenState extends State<MapScreen> {
             isPaused: _isPaused,
             onToggleWorkout: _toggleWorkout,
             onStopWorkout: () {
-              // TODO: add the resume of the workout
-              Navigator.pop(context);
+              // After the stop is pressed
+              _stopwatch.stop();
+              _timer.cancel();
+              
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SummaryScreen(
+                    distance: _totalDistance,
+                    time: _elapsedTime,
+                    pace: _displayPace,
+                    route: _trackSegments,
+                    splits: _kmSplits,
+                  ),
+                ),
+              );
             },
           ),
         ],
