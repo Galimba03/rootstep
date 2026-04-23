@@ -24,7 +24,7 @@ The goal is to create a transparent alternative to commercial apps, offering a m
 ## 📱 Screenshots
 | Home Screen | Live Tracking |
 | :---: | :---: | :---: |
-| <img src="assets/readme/rootstep_homepage.png" width="250"> | <img src="assets/readme/rootstep_running.png" width="250"> | <img src="assets/readme/rootstep_summary_screen.png" width="250"> |
+| <img src="assets/readme/rootstep_homepage.png" width="200"> | <img src="assets/readme/rootstep_running.png" width="200"> | <img src="assets/readme/rootstep_summary_screen.png" width="200"> |
 
 
 ---
