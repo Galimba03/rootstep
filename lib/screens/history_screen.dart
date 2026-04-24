@@ -36,7 +36,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
       body: _activities.isEmpty
           ? _buildEmptyState()
           : ListView.builder(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(
+                top: 8,
+                left: 0,
+                right: 0,
+                bottom: 20, 
+              ),
               itemCount: _activities.length,
               itemBuilder: (context, index) {
                 final activity = _activities[index];

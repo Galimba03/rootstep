@@ -42,69 +42,60 @@ class _ControlButtonsState extends State<ControlButtons> {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 40,
-      left: 0,
-      right: 0,
-      child: Column(
-        mainAxisSize: MainAxisSize.min, // Occupy only the necessary space
-        children: [
-          AnimatedOpacity(
-            opacity: _showHint ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 300),
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 16.0),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200, 
-                  borderRadius: BorderRadius.circular(20), 
-                ),
-                child: Text(
-                  "Hold for 3 seconds to finish",
-                  style: TextStyle(
-                    color: Colors.grey.shade600, 
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                    letterSpacing: 0.3,
-                  ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AnimatedOpacity(
+          opacity: _showHint ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 300),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200, 
+                borderRadius: BorderRadius.circular(20), 
+              ),
+              child: Text(
+                "Hold for 3 seconds to finish",
+                style: TextStyle(
+                  color: Colors.grey.shade600, 
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                  letterSpacing: 0.3,
                 ),
               ),
             ),
           ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Button START / PAUSE / RESUME
-              FloatingActionButton.extended(
-                onPressed: widget.onToggleWorkout,
-                label: Text(
-                  !widget.isWorkoutActive ? "START" : (widget.isPaused ? "RESUME" : "PAUSE"),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                icon: Icon(!widget.isWorkoutActive || widget.isPaused ? Icons.play_arrow : Icons.pause),
-                backgroundColor: widget.isPaused ? Colors.green.shade700 : Colors.green.shade900,
-                foregroundColor: Colors.white,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FloatingActionButton.extended(
+              onPressed: widget.onToggleWorkout,
+              label: Text(
+                !widget.isWorkoutActive ? "START" : (widget.isPaused ? "RESUME" : "PAUSE"),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              
-              // Button STOP
-              if (widget.isWorkoutActive && widget.isPaused) ...[
-                const SizedBox(width: 20),
-                GestureDetector(
-                  onTap: _triggerHint, 
-                  onLongPress: widget.onStopWorkout,
-                  child: CircleAvatar(
-                    radius: 28,
-                    backgroundColor: Colors.red,
-                    child: const Icon(Icons.stop, color: Colors.white, size: 30),
-                  ),
+              icon: Icon(!widget.isWorkoutActive || widget.isPaused ? Icons.play_arrow : Icons.pause),
+              backgroundColor: widget.isPaused ? Colors.green.shade700 : Colors.green.shade900,
+              foregroundColor: Colors.white,
+            ),
+            if (widget.isWorkoutActive && widget.isPaused) ...[
+              const SizedBox(width: 20),
+              GestureDetector(
+                onTap: _triggerHint, 
+                onLongPress: widget.onStopWorkout,
+                child: const CircleAvatar(
+                  radius: 28,
+                  backgroundColor: Colors.red,
+                  child: Icon(Icons.stop, color: Colors.white, size: 30),
                 ),
-              ],
+              ),
             ],
-          ),
-        ],
-      ),
+          ],
+        ),
+      ],
     );
   }
 }

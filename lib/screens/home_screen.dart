@@ -12,41 +12,107 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  // List of screens to display
   final List<Widget> _pages = const [
     MapScreen(),
     HistoryScreen(),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // IndexedStack preserves the state (and the map) of the pages
       body: IndexedStack(
         index: _selectedIndex,
         children: _pages,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: const Color(0xFF2D5A27),
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
-            label: 'Track',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
+      bottomNavigationBar: _buildBottomBar(),
+    );
+  }
+
+  Widget _buildBottomBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -5),
           ),
         ],
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10, bottom: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(
+                index: 0, 
+                unselectedIcon: Icons.explore_outlined, 
+                selectedIcon: Icons.explore, 
+                label: "Track",
+              ),
+              _buildNavItem(
+                index: 1, 
+                unselectedIcon: Icons.history_outlined, 
+                selectedIcon: Icons.history, 
+                label: "History",
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem({
+    required int index, 
+    required IconData unselectedIcon, 
+    required IconData selectedIcon, 
+    required String label
+  }) {
+    bool isSelected = _selectedIndex == index;
+    
+    final Color activeColor = const Color(0xFF2E7D32);
+    final Color inactiveColor = const Color(0xFF9E9E9E);
+
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => setState(() => _selectedIndex = index),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: 4,
+              width: 64,
+              decoration: BoxDecoration(
+                color: isSelected ? activeColor : Colors.transparent,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(4),
+                  bottomRight: Radius.circular(4),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Icon(
+              isSelected ? selectedIcon : unselectedIcon,
+              color: isSelected ? activeColor : inactiveColor,
+              size: 26,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? activeColor : inactiveColor,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                fontSize: 11,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

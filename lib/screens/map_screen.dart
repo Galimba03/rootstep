@@ -287,56 +287,66 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           ),
           
           // 2. Statistics panel
-          StatsPanel(
-            elapsedTime: _elapsedTime,
-            totalDistance: _totalDistance,
-            pace: _displayPace, 
-            lastKmPace: _lastKmPace,
-            altitude: _altitude,
+          Positioned(
+            top: 10,
+            left: 10,
+            right: 10,
+            child: SafeArea(
+              child: StatsPanel(
+                elapsedTime: _elapsedTime,
+                totalDistance: _totalDistance,
+                pace: _displayPace, 
+                lastKmPace: _lastKmPace,
+                altitude: _altitude,
+              ),
+            ),
           ),
 
           // 3. Control buttons
-          ControlButtons(
-            isWorkoutActive: _isWorkoutActive,
-            isPaused: _isPaused,
-            onToggleWorkout: _toggleWorkout,
-            onStopWorkout: () async {
-              // After the stop is pressed
-              _stopwatch.stop();
-              _timer.cancel();
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 40,
+            child: ControlButtons(
+              isWorkoutActive: _isWorkoutActive,
+              isPaused: _isPaused,
+              onToggleWorkout: _toggleWorkout,
+              onStopWorkout: () async {
+                _stopwatch.stop();
+                _timer.cancel();
 
-              // Save to database
-              final distanceSaved = _totalDistance;
-              final timeSaved = _elapsedTime;
-              final paceSaved = _displayPace;
-              final routeSaved = List<List<LatLng>>.from(_trackSegments);
-              final splitsSaved = List<String>.from(_kmSplits);
+                final distanceSaved = _totalDistance;
+                final timeSaved = _elapsedTime;
+                final paceSaved = _displayPace;
+                final routeSaved = List<List<LatLng>>.from(_trackSegments);
+                final splitsSaved = List<String>.from(_kmSplits);
 
-              await StorageService.saveActivity(
-                distance: distanceSaved,
-                elapsedTime: timeSaved,
-                pace: paceSaved,
-                route: routeSaved,
-                splits: splitsSaved,
-              );
+                await StorageService.saveActivity(
+                  distance: distanceSaved,
+                  elapsedTime: timeSaved,
+                  pace: paceSaved,
+                  route: routeSaved,
+                  splits: splitsSaved,
+                );
 
-              if (!mounted) return;
+                if (!mounted) return;
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SummaryScreen(
-                    distance: distanceSaved,
-                    time: timeSaved,
-                    pace: paceSaved,
-                    route: routeSaved,
-                    splits: splitsSaved,
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SummaryScreen(
+                      distance: distanceSaved,
+                      time: timeSaved,
+                      pace: paceSaved,
+                      route: routeSaved,
+                      splits: splitsSaved,
+                    ),
                   ),
-                ),
-              );
+                );
 
-              _resetWorkout();
-            },
+                _resetWorkout();
+              },
+            ),
           ),
         ],
       ),
