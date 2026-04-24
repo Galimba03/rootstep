@@ -18,7 +18,6 @@ class SummaryScreen extends StatelessWidget {
     required this.splits,
   });
 
-  // Getting the bounds of the path done
   LatLngBounds? _getBounds() {
     if (route.isEmpty || route.first.isEmpty) return null;
     
@@ -48,7 +47,7 @@ class SummaryScreen extends StatelessWidget {
         title: const Text('Workout Summary'),
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Column(
@@ -56,9 +55,7 @@ class SummaryScreen extends StatelessWidget {
           SizedBox(
             height: 250,
             child: bounds == null
-                // If there are no points in the path followed...
                 ? const Center(child: Text('No route data'))
-                // ... otherwise create the map with all the route
                 : FlutterMap(
                     options: MapOptions(
                       initialCameraFit: CameraFit.bounds(
@@ -76,9 +73,10 @@ class SummaryScreen extends StatelessWidget {
                       ),
                       PolylineLayer(
                         polylines: route
+                            .where((segment) => segment.isNotEmpty)
                             .map((segment) => Polyline(
                                   points: segment,
-                                  color: Colors.green.shade900,
+                                  color: Colors.green.shade700,
                                   strokeWidth: 5,
                                 ))
                             .toList(),
@@ -87,7 +85,6 @@ class SummaryScreen extends StatelessWidget {
                   ),
           ),
 
-          // General infos of the run
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -99,7 +96,9 @@ class SummaryScreen extends StatelessWidget {
               ],
             ),
           ),
+
           const Divider(),
+
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Align(
@@ -111,7 +110,6 @@ class SummaryScreen extends StatelessWidget {
             ),
           ),
 
-          // Splits section
           Expanded(
             child: ListView.builder(
               itemCount: splits.length,

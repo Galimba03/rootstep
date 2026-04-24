@@ -8,6 +8,7 @@ import 'package:flutter_map_cache/flutter_map_cache.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 
+import '../services/storage_service.dart';
 import '../widgets/stats_panel.dart';
 import '../widgets/control_buttons.dart';
 import 'summary_screen.dart';
@@ -224,6 +225,22 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     });
   }
 
+  void _resetWorkout() {
+    setState(() {
+      _isWorkoutActive = false;
+      _isPaused = false;
+      _totalDistance = 0.0;
+      _elapsedTime = "00:00:00";
+      _displayPace = "--:--";
+
+      _trackSegments.clear();
+      _trackSegments.add([]);
+
+      _kmSplits.clear();
+      _stopwatch.reset();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_cacheStore == null) return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -283,23 +300,42 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
             isWorkoutActive: _isWorkoutActive,
             isPaused: _isPaused,
             onToggleWorkout: _toggleWorkout,
-            onStopWorkout: () {
+            onStopWorkout: () async {
               // After the stop is pressed
               _stopwatch.stop();
               _timer.cancel();
-              
-              Navigator.pushReplacement(
+
+              // Save to database
+              final distanceSaved = _totalDistance;
+              final timeSaved = _elapsedTime;
+              final paceSaved = _displayPace;
+              final routeSaved = List<List<LatLng>>.from(_trackSegments);
+              final splitsSaved = List<String>.from(_kmSplits);
+
+              await StorageService.saveActivity(
+                distance: distanceSaved,
+                elapsedTime: timeSaved,
+                pace: paceSaved,
+                route: routeSaved,
+                splits: splitsSaved,
+              );
+
+              if (!mounted) return;
+
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => SummaryScreen(
-                    distance: _totalDistance,
-                    time: _elapsedTime,
-                    pace: _displayPace,
-                    route: _trackSegments,
-                    splits: _kmSplits,
+                    distance: distanceSaved,
+                    time: timeSaved,
+                    pace: paceSaved,
+                    route: routeSaved,
+                    splits: splitsSaved,
                   ),
                 ),
               );
+
+              _resetWorkout();
             },
           ),
         ],
