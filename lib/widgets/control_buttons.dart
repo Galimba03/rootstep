@@ -49,18 +49,25 @@ class _ControlButtonsState extends State<ControlButtons> {
       child: Column(
         mainAxisSize: MainAxisSize.min, // Occupy only the necessary space
         children: [
-          // TODO: add a better text displayed
           AnimatedOpacity(
             opacity: _showHint ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 300),
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.only(bottom: 16.0),
-              child: Text(
-                "Hold for 3 seconds to finish",
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200, 
+                  borderRadius: BorderRadius.circular(20), 
+                ),
+                child: Text(
+                  "Hold for 3 seconds to finish",
+                  style: TextStyle(
+                    color: Colors.grey.shade600, 
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    letterSpacing: 0.3,
+                  ),
                 ),
               ),
             ),
