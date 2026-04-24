@@ -19,7 +19,7 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   // Map logic and cache
   LatLng? _currentPosition;
   final MapController _mapController = MapController();
@@ -66,6 +66,49 @@ class _MapScreenState extends State<MapScreen> {
     super.dispose();
   }
 
+  Future<void> _initCache() async {
+    final dir = await getTemporaryDirectory();
+    setState(() {
+      _cacheStore = HiveCacheStore('${dir.path}/map_tiles');
+    });
+  }
+
+  // Function for the zoom/de-zoom animation when the workout start/pause
+  void _animatedMapMove(LatLng destLocation, double destZoom) {
+    final latTween = Tween<double>(
+        begin: _mapController.camera.center.latitude,
+        end: destLocation.latitude);
+    final lngTween = Tween<double>(
+        begin: _mapController.camera.center.longitude,
+        end: destLocation.longitude);
+    final zoomTween = Tween<double>(
+        begin: _mapController.camera.zoom, 
+        end: destZoom);
+
+    final controller = AnimationController(
+        duration: const Duration(milliseconds: 500), vsync: this);
+    
+    final Animation<double> animation = CurvedAnimation(
+        parent: controller, curve: Curves.fastOutSlowIn);
+
+    controller.addListener(() {
+      _mapController.move(
+        LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)),
+        zoomTween.evaluate(animation),
+      );
+    });
+
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        controller.dispose();
+      } else if (status == AnimationStatus.dismissed) {
+        controller.dispose();
+      }
+    });
+
+    controller.forward();
+  }
+
   String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, "0");
     return "${twoDigits(duration.inMinutes)}:${twoDigits(duration.inSeconds.remainder(60))}";
@@ -80,13 +123,6 @@ class _MapScreenState extends State<MapScreen> {
     int minutes = paceDecimal.toInt();
     int seconds = ((paceDecimal - minutes) * 60).toInt();
     return "$minutes'${seconds.toString().padLeft(2, "0")}\"";
-  }
-
-  Future<void> _initCache() async {
-    final dir = await getTemporaryDirectory();
-    setState(() {
-      _cacheStore = HiveCacheStore('${dir.path}/map_tiles');
-    });
   }
 
   void _setupLocation() async {
@@ -123,10 +159,7 @@ class _MapScreenState extends State<MapScreen> {
         _currentPosition = newPoint;
 
         try {
-          // The map is centered over the position of movement
-          if (_isWorkoutActive && !_isPaused) {
-            _mapController.move(_currentPosition!, _mapController.camera.zoom);
-          }
+          _mapController.move(_currentPosition!, _mapController.camera.zoom);
         } catch (e) {
           debugPrint("Map not ready");
         }
@@ -161,15 +194,31 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       if (!_isWorkoutActive) {
         _isWorkoutActive = true;
-        _trackSegments.add([]); // First segment
+        _isPaused = false;
+        _trackSegments.add([]); // first segment
         _stopwatch.start();
+
+        // Dynamic zoom in on start
+        if (_currentPosition != null) {
+          _animatedMapMove(_currentPosition!, 17.5);
+        }
       } else {
         _isPaused = !_isPaused;
         if (_isPaused) {
           _stopwatch.stop();
+
+          // Dynamic zoom out on pause
+          if (_currentPosition != null) {
+            _animatedMapMove(_currentPosition!, 14.5);
+          }
         } else {
-          _trackSegments.add([]); // New segment after the pause
+          _trackSegments.add([]); // new segment after the pause
           _stopwatch.start();
+
+          // Back to close zoom on resume
+          if (_currentPosition != null) {
+            _animatedMapMove(_currentPosition!, 17.5);
+          }
         }
       }
     });
