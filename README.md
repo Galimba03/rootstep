@@ -78,6 +78,7 @@ We are in the early stages and every contribution is valuable! If you want to pa
 - [ ] Updating of the run even with the phone locked.
 - [ ] GPX file export.
 - [ ] Better UX/UI.
+- [ ] Implementing Douglas-Peucker algorithm for semplification of paths.
 - [ ] More features coming soon...
 
 ---

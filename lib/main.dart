@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
 import 'screens/home_screen.dart';
 
-void main() {
+import 'models/activity.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await Hive.initFlutter(); // initialize Hive
+  Hive.registerAdapter(ActivityAdapter()); // register the adapter
+  await Hive.openBox<Activity>('activities'); // open the box for our runs
+
   runApp(const FitnessApp());
 }
 

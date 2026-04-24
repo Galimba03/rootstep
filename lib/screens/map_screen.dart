@@ -244,12 +244,16 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               ),
               
               // FMap LAYER 2: Polyline for the tracking of the path
-              PolylineLayer(
-                polylines: _trackSegments.map((segment) => Polyline(
-                  points: segment,
-                  color: Colors.green.shade600,
-                  strokeWidth: 6,
-                )).toList(),
+              if (_trackSegments.any((s) => s.isNotEmpty))
+                PolylineLayer(
+                  polylines: _trackSegments
+                    .where((segment) => segment.isNotEmpty)
+                    .map((segment) => Polyline(
+                          points: segment,
+                          color: Colors.green,
+                          strokeWidth: 4.0,
+                        ))
+                    .toList(),
               ),
 
               // FMap LAYER 3: Point of the GPS
