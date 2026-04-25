@@ -13,6 +13,8 @@ import '../widgets/stats_panel.dart';
 import '../widgets/control_buttons.dart';
 import 'summary_screen.dart';
 
+// TODO: make the bottom nav-bar disappear when the workout starts
+
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
 
