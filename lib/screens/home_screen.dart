@@ -12,9 +12,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [
-    MapScreen(),
-    HistoryScreen(),
+  // Converted to getter. UniqueKey forces HistoryScreen to refresh data from Hive.
+  List<Widget> get _pages => [
+    const MapScreen(),
+    HistoryScreen(key: UniqueKey()),
   ];
 
   @override

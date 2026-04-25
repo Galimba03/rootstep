@@ -196,7 +196,12 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       if (!_isWorkoutActive) {
         _isWorkoutActive = true;
         _isPaused = false;
-        _trackSegments.add([]); // first segment
+
+        List<LatLng> initialSegment = [];
+        if (_currentPosition != null) {
+          initialSegment.add(_currentPosition!);
+        }
+        _trackSegments.add(initialSegment); // first segment
         _stopwatch.start();
 
         // Dynamic zoom in on start
@@ -230,8 +235,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       _isWorkoutActive = false;
       _isPaused = false;
       _totalDistance = 0.0;
-      _elapsedTime = "00:00:00";
-      _displayPace = "--:--";
+      _elapsedTime = "00:00";
+      _displayPace = "0'00\"";
 
       _trackSegments.clear();
       _trackSegments.add([]);
@@ -313,7 +318,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               onToggleWorkout: _toggleWorkout,
               onStopWorkout: () async {
                 _stopwatch.stop();
-                _timer.cancel();
+                // _timer.cancel();
 
                 final distanceSaved = _totalDistance;
                 final timeSaved = _elapsedTime;
