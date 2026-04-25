@@ -1,6 +1,10 @@
+// lib/screens/activity_detail_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:intl/intl.dart';
+
 import '../models/activity.dart';
 
 class ActivityDetailScreen extends StatelessWidget {
@@ -8,31 +12,64 @@ class ActivityDetailScreen extends StatelessWidget {
 
   const ActivityDetailScreen({super.key, required this.activity});
 
+  String _formatDuration(int totalSeconds) {
+    final int hours = totalSeconds ~/ 3600;
+    final int minutes = (totalSeconds % 3600) ~/ 60;
+    final int seconds = totalSeconds % 60;
+
+    if (hours > 0) {
+      return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+    }
+    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Convert List<List<List<double>>> back to List<LatLng> for Polyline
-    final List<LatLng> points = activity.route.expand((segment) {
-      return segment.map((p) => LatLng(p[0], p[1]));
-    }).toList();
+    final List<LatLng> points = [];
+    
+    for (var segment in activity.route) {
+      for (var pt in segment) {
+        if (pt.length >= 2) {
+          points.add(LatLng(pt[0], pt[1]));
+        }
+      }
+    }
+
+    bool hasValidBounds = false;
+    LatLngBounds? mapBounds;
+    
+    if (points.isNotEmpty) {
+      mapBounds = LatLngBounds.fromPoints(points);
+      if (mapBounds.southWest.latitude != mapBounds.northEast.latitude || 
+          mapBounds.southWest.longitude != mapBounds.northEast.longitude) {
+        hasValidBounds = true;
+      }
+    }
+
+    final String formattedDate = DateFormat('EEEE, MMM d, yyyy • HH:mm').format(activity.dateTime);
+    final String distanceKm = (activity.distance / 1000).toStringAsFixed(2);
+    final String displayTime = _formatDuration(activity.durationInSeconds);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Run Detail')),
+      appBar: AppBar(
+        title: const Text('Run Detail'),
+        centerTitle: true,
+      ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SizedBox(
             height: 300,
             child: FlutterMap(
               options: MapOptions(
-                initialCameraFit: (points.length > 1) 
-                  ? CameraFit.bounds(
-                      bounds: LatLngBounds.fromPoints(points),
-                      padding: const EdgeInsets.all(40),
-                    )
-                  : null, // If there's only one point we don't use automatic fit
-                
-                // If fit cannot be done (only one point), center point manually
-                initialCenter: (points.length == 1) ? points.first : const LatLng(0, 0),
-                initialZoom: (points.length == 1) ? 15.0 : 1.0,
+                initialCameraFit: hasValidBounds 
+                    ? CameraFit.bounds(
+                        bounds: mapBounds!,
+                        padding: const EdgeInsets.all(40),
+                      )
+                    : null,
+                initialCenter: points.isNotEmpty ? points.first : const LatLng(45.46, 9.19),
+                initialZoom: points.isNotEmpty ? 15.0 : 2.0,
               ),
               children: [
                 TileLayer(
@@ -49,27 +86,71 @@ class ActivityDetailScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                if (points.length == 1)
+                if (points.isNotEmpty)
                   MarkerLayer(
                     markers: [
                       Marker(
                         point: points.first,
-                        width: 20,
-                        height: 20,
-                        child: const Icon(Icons.location_on, color: Colors.red),
+                        width: 16,
+                        height: 16,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2E7D32),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                        ),
                       ),
                     ],
                   ),
               ],
             ),
           ),
-
-          // TODO: Add stats cards here similar to SummaryScreen
           Expanded(
-            child: Center(child: Text("Details for run on ${activity.dateTime}")),
-          )
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    formattedDate,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF0D1B11),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildDetailItem("Distance", "$distanceKm km"),
+                      _buildDetailItem("Time", displayTime),
+                      _buildDetailItem("Pace", activity.pace),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildDetailItem(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
+        ),
+      ],
     );
   }
 }

@@ -41,6 +41,21 @@ class SummaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bounds = _getBounds();
+    bool hasValidBounds = false;
+    
+    if (bounds != null) {
+      // Check if the bounds actually represent an area and not just a single dot
+      if (bounds.southWest.latitude != bounds.northEast.latitude || 
+          bounds.southWest.longitude != bounds.northEast.longitude) {
+        hasValidBounds = true;
+      }
+    }
+
+    // Get the first point to use as a fallback center
+    LatLng? firstPoint;
+    if (route.isNotEmpty && route.first.isNotEmpty) {
+      firstPoint = route.first.first;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -54,14 +69,18 @@ class SummaryScreen extends StatelessWidget {
         children: [
           SizedBox(
             height: 250,
-            child: bounds == null
+            child: firstPoint == null
                 ? const Center(child: Text('No route data'))
                 : FlutterMap(
                     options: MapOptions(
-                      initialCameraFit: CameraFit.bounds(
-                        bounds: bounds,
-                        padding: const EdgeInsets.all(32.0),
-                      ),
+                      initialCameraFit: hasValidBounds
+                          ? CameraFit.bounds(
+                              bounds: bounds!,
+                              padding: const EdgeInsets.all(32.0),
+                            )
+                          : null,
+                      initialCenter: firstPoint,
+                      initialZoom: 15.0, // Default zoom for single-point runs
                       interactionOptions: const InteractionOptions(
                         flags: InteractiveFlag.none, 
                       ),
@@ -81,6 +100,23 @@ class SummaryScreen extends StatelessWidget {
                                 ))
                             .toList(),
                       ),
+                      if (!hasValidBounds)
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point: firstPoint,
+                              width: 16,
+                              height: 16,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade700,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 2),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                     ],
                   ),
           ),
