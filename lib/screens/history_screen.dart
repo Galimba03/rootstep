@@ -103,7 +103,7 @@ class _SwipeableActivityCardState extends State<_SwipeableActivityCard> with Sin
   late AnimationController _controller;
   late Animation<double> _animation;
   double _dragExtent = 0.0;
-  final double _maxDragDistance = 90.0; // Space to show the button
+  final double _maxDragDistance = 90.0; // space to show the button
 
   @override
   void initState() {
@@ -213,7 +213,7 @@ class _SwipeableActivityCardState extends State<_SwipeableActivityCard> with Sin
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.delete_outline, color: Colors.red, size: 28), // Red trash icon
+                    child: const Icon(Icons.delete_outline, color: Colors.red, size: 28), // red trash icon
                   ),
                 ),
               ),
@@ -245,7 +245,7 @@ class _ActivityCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       elevation: 2,
-      color: Colors.white, // Assicura che la card non sia trasparente nascondendo il cestino
+      color: Colors.white, // this grant the card the property of not being transparent.
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),

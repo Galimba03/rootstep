@@ -25,8 +25,10 @@ The goal is to create a transparent alternative to commercial apps, offering a m
 | Home Screen | Running Tracking | Pause Workout |
 | :---: | :---: | :---: |
 | <img src="assets/readme/rootstep_homepage.png" width="250"> | <img src="assets/readme/rootstep_running_screen.png" width="250"> | <img src="assets/readme/rootstep_pause_workout.png" width="250"> |
-| Summary | History | Run details |
-| <img src="assets/readme/rootstep_summary_screen.png" width="250"> | <img src="assets/readme/rootstep_history_screen.png" width="250"> | <img src="assets/readme/rootstep_run_details_screen.png" width="250"> |
+| Summary | History | History Deletion |
+| <img src="assets/readme/rootstep_summary_screen.png" width="250"> | <img src="assets/readme/rootstep_history_screen.png" width="250"> | <img src="assets/readme/rootstep_run_deletion.png" width="250"> |
+| Run details | Sharing screen | - |
+| <img src="assets/readme/rootstep_run_details_screen.png" width="250"> | <img src="assets/readme/rootstep_sharing_run.png" width="250"> | - |
 
 
 ---
@@ -77,7 +79,7 @@ We are in the early stages and every contribution is valuable! If you want to pa
 - [x] Stat calculations (Distance, Pace, Calories).
 - [x] Summary screen.
 - [x] Running Diary.
-- [ ] GPX file export.
+- [x] GPX file export.
 - [ ] Updating of the run even with the phone locked.
 - [ ] Better UX/UI.
 - [ ] Implementing Douglas-Peucker algorithm for semplification of paths.
