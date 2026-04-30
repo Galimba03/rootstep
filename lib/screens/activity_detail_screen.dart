@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:intl/intl.dart';
 
+import '../services/gpx_service.dart';
 import '../models/activity.dart';
 
 class ActivityDetailScreen extends StatelessWidget {
@@ -54,6 +55,15 @@ class ActivityDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Run Detail'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.ios_share_rounded), // IOS condivision icon
+            tooltip: 'Export to GPX',
+            onPressed: () async {
+              await GpxService.exportAndShare(activity);
+            },
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
