@@ -6,23 +6,36 @@ import '../models/activity.dart';
 
 class GpxService {
   static Future<void> exportAndShare(Activity activity) async {
-    // 1. Generate the content of the file gpx. It's just an xml file.
-    String gpxContent = _generateGpx(activity);
+    try {
+        // 1. Generate the content of the file gpx. It's just an xml file.
+        String gpxContent = _generateGpx(activity);
 
-    // 2. Find the temporary directory to save the gpx file.
-    final directory = await getTemporaryDirectory();
-    final timestamp = DateFormat('yyyyMMdd_HHmmss').format(activity.dateTime);
-    final filePath = '${directory.path}/rootstep_$timestamp.gpx';
-    final file = File(filePath);
+        // 2. Find the temporary directory to save the gpx file.
+        final directory = await getTemporaryDirectory();
+        // Check if the directory exists
+        if (!await directory.exists()) {
+            await directory.create(recursive: true);
+        }
 
-    // 3. Write the file on the device.
-    await file.writeAsString(gpxContent);
+        final timestamp = DateFormat('yyyyMMdd_HHmmss').format(activity.dateTime);
+        final filePath = '${directory.path}/rootstep_$timestamp.gpx';
+        final file = File(filePath);
 
-    // 4. Open the native menu of condivision (IOS/Android)
-    await Share.shareXFiles(
-      [XFile(file.path)], 
-      text: 'Check out my run on RootStep!',
-    );
+        // 3. Write the file on the device (securing that the file is created before).
+        if (!await file.exists()) {
+            await file.create(recursive: true);
+        }
+
+        await file.writeAsString(gpxContent);
+
+        // 4. Open the native menu of condivision (IOS/Android)
+        await Share.shareXFiles(
+        [XFile(file.path)], 
+        text: 'Check out my run on RootStep!',
+        );
+    } catch (e) {
+      print("Error while exporting the GPX: $e");
+    }
   }
 
   static String _generateGpx(Activity activity) {

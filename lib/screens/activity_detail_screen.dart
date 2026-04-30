@@ -1,5 +1,3 @@
-// lib/screens/activity_detail_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -57,7 +55,8 @@ class ActivityDetailScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.ios_share_rounded), // IOS condivision icon
+            // If it is iOS/macOS use the iOS icon, otherwise the one of Android/Google
+            icon: Icon(Icons.adaptive.share),
             tooltip: 'Export to GPX',
             onPressed: () async {
               await GpxService.exportAndShare(activity);
