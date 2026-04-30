@@ -74,5 +74,17 @@
     <string>L'app traccia il percorso anche in background per non interrompere l'allenamento.</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>L'app traccia il percorso anche in background per non interrompere l'allenamento.</string>
+
+	<!-- Permissions for the background execution -->
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>RootStep needs your location in the background to track your run when the screen is locked.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>RootStep needs your location in the background to track your run when the screen is locked.</string>
+    
+    <!-- Background mode for the background GPS -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>location</string>
+    </array>
 </dict>
 </plist>

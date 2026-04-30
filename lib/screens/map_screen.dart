@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
@@ -129,9 +130,38 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   }
 
   void _setupLocation() async {
-    Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 5),
-    ).listen((Position position) {
+    late LocationSettings locationSettings;
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      locationSettings = AndroidSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 5,
+        forceLocationManager: true,
+        // Configure the fix notification to not close the app from Andorid
+        foregroundNotificationConfig: const ForegroundNotificationConfig(
+          notificationText: "Tracking your run...",
+          notificationTitle: "RootStep is active",
+          enableWakeLock: true,
+        ),
+      );
+    } else if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS) {
+      locationSettings = AppleSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 5,
+        // Optimization for the run. It filters anomaly peaks.
+        activityType: ActivityType.fitness,
+        pauseLocationUpdatesAutomatically: false,
+        // Show the pill on iOS to let the tracking run while the app is running.
+        showBackgroundLocationIndicator: true, 
+      );
+    } else {
+      locationSettings = const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 5,
+      );
+    }
+
+    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
       if (!mounted) return;
 
       setState(() {
@@ -146,13 +176,11 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
             );
             _totalDistance += d;
 
-            // 1. Update of the Pace every 50m
             if (_totalDistance - _last50mDistance >= 50) {
               _displayPace = _calculateAveragePace();
               _last50mDistance = _totalDistance;
             }
 
-            // 2. Chilometers logic (Splits)
             if (_totalDistance - _lastKmDistance >= 1000) {
               _saveKmSplit();
             }
