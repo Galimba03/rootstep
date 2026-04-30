@@ -66,7 +66,7 @@ We are in the early stages and every contribution is valuable! If you want to pa
 ### 📋 What we are looking for:
 - [x] **Graphics** A designer or an artist willing to create some graphics.
 - [ ] **Data Visualization:** Charts for average pace and elevation.
-- [ ] **Background Tasks:** Advanced GPS management when the screen is off.
+- [x] **Background Tasks:** Advanced GPS management when the screen is off.
 - [ ] **Dark Mode:** Support for dark theme.
 
 ---
@@ -80,7 +80,7 @@ We are in the early stages and every contribution is valuable! If you want to pa
 - [x] Summary screen.
 - [x] Running Diary.
 - [x] GPX file export.
-- [ ] Updating of the run even with the phone locked.
+- [x] Updating of the run even with the phone locked.
 - [ ] Better UX/UI.
 - [ ] Implementing Douglas-Peucker algorithm for semplification of paths.
 - [ ] More features coming soon...
