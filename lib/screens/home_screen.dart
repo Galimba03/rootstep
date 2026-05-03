@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'map_screen.dart';
 import 'history_screen.dart';
+import '../services/permission_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,6 +19,17 @@ class _HomeScreenState extends State<HomeScreen> {
     const MapScreen(),
     HistoryScreen(key: UniqueKey()),
   ];
+
+  // Permissions
+  @override
+  void initState() {
+    super.initState();
+    _initAppPermissions();
+  }
+
+  Future<void> _initAppPermissions() async {
+    await PermissionService.requestInitialPermissions();
+  }
 
   @override
   Widget build(BuildContext context) {

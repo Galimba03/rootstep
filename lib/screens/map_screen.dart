@@ -12,6 +12,7 @@ import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_stor
 import '../services/storage_service.dart';
 import '../widgets/stats_panel.dart';
 import '../widgets/control_buttons.dart';
+import '../services/live_activity_service.dart';
 import 'summary_screen.dart';
 
 // TODO: make the bottom nav-bar disappear when the workout starts
@@ -60,6 +61,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         setState(() {
           _elapsedTime = _formatDuration(_stopwatch.elapsed);
         });
+
+        // Trigger the Lock Screen / Notification update
+        LiveActivityService.updateActivity(
+          time: _elapsedTime,
+          distance: _totalDistance,
+          pace: _displayPace,
+        );
       }
     });
   }
@@ -169,6 +177,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         _altitude = position.altitude;
 
         if (_isWorkoutActive && !_isPaused) {
+          // Sync data with Lock Screen on every GPS fix
+          LiveActivityService.updateActivity(
+            time: _elapsedTime,
+            distance: _totalDistance,
+            pace: _displayPace,
+          );
+
           if (_trackSegments.isNotEmpty && _trackSegments.last.isNotEmpty) {
             double d = Geolocator.distanceBetween(
               _trackSegments.last.last.latitude, _trackSegments.last.last.longitude,
@@ -238,6 +253,13 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         if (_currentPosition != null) {
           _animatedMapMove(_currentPosition!, 17.5);
         }
+
+        // Start Live Activity
+        LiveActivityService.startActivity(
+          time: _elapsedTime,
+          distance: _totalDistance,
+          pace: _displayPace,
+        );
       } else {
         _isPaused = !_isPaused;
         if (_isPaused) {
@@ -348,7 +370,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               onToggleWorkout: _toggleWorkout,
               onStopWorkout: () async {
                 _stopwatch.stop();
-                // _timer.cancel();
+                _timer.cancel();
+                await LiveActivityService.stopActivity();
 
                 final distanceSaved = _totalDistance;
                 final timeSaved = _elapsedTime;

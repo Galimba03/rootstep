@@ -7,7 +7,7 @@
 [![OpenStreetMap](https://img.shields.io/badge/OpenStreetMap-%237EBC6F.svg?style=for-the-badge&logo=OpenStreetMap&logoColor=white)](https://www.openstreetmap.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-**RootStep** is a fully Open Source fitness tracking app, born for runners who want full control over their data. No subscriptions, no invasive tracking—just you and the road.
+**RootStep** is a fully Open Source fitness tracking app, born for runners who want full control over their data. No subscriptions, no invasive tracking. Just you and the road.
 
 ---
 
@@ -66,7 +66,7 @@ We are in the early stages and every contribution is valuable! If you want to pa
 ### 📋 What we are looking for:
 - [x] **Graphics** A designer or an artist willing to create some graphics.
 - [ ] **Data Visualization:** Charts for average pace and elevation.
-- [x] **Background Tasks:** Advanced GPS management when the screen is off.
+- [ ] **Background Tasks:** Advanced GPS management when the screen is off.
 - [ ] **Dark Mode:** Support for dark theme.
 
 ---

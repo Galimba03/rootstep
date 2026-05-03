@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="#FAFAFA">
+
+    <TextView
+        android:id="@+id/app_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:text="RootStep Active"
+        android:textColor="#2E7D32"
+        android:textStyle="bold"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:text="00:00"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:textSize="14sp" />
+
+    <ProgressBar
+        android:id="@+id/root_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_below="@id/app_title"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:progressTint="#2E7D32"
+        android:max="10000" 
+        android:progress="0" />
+
+    <TextView
+        android:id="@+id/distance_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/root_progress"
+        android:layout_alignParentStart="true"
+        android:text="DISTANCE"
+        android:textColor="#757575"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/distance_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/distance_label"
+        android:layout_alignParentStart="true"
+        android:text="0.00 km"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/pace_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/root_progress"
+        android:layout_alignParentEnd="true"
+        android:text="PACE"
+        android:textColor="#757575"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/pace_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pace_label"
+        android:layout_alignParentEnd="true"
+        android:text="0'00&quot;"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+</RelativeLayout>
