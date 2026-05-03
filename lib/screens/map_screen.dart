@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -52,6 +53,30 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin, Wi
   // Variable to keep track of the app state
   AppLifecycleState _appState = AppLifecycleState.resumed;
 
+  int _getEffectiveStartTime() {
+    return DateTime.now().millisecondsSinceEpoch - _stopwatch.elapsedMilliseconds;
+  }
+
+  void _startLiveActivity() {
+    LiveActivityService.startActivity(
+      time: _elapsedTime,
+      distance: _totalDistance,
+      pace: _displayPace,
+      startTimeMs: _getEffectiveStartTime(),
+      isPaused: _isPaused,
+    );
+  }
+
+  void _updateLiveActivity() {
+    LiveActivityService.updateActivity(
+      time: _elapsedTime,
+      distance: _totalDistance,
+      pace: _displayPace,
+      startTimeMs: _getEffectiveStartTime(), // Pass the calculated timestamp
+      isPaused: _isPaused,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -70,15 +95,12 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin, Wi
 
         // Update notification ONLY when app is in background
         if (_appState == AppLifecycleState.paused) {
-          LiveActivityService.updateActivity(
-            time: _elapsedTime,
-            distance: _totalDistance,
-            pace: _displayPace,
-          );
+          _updateLiveActivity();
         }
       }
     });
   }
+
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -88,11 +110,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin, Wi
 
     if (state == AppLifecycleState.paused && _isWorkoutActive) {
       // User left the app: Start/Show the custom notification
-      LiveActivityService.startActivity(
-        time: _elapsedTime,
-        distance: _totalDistance,
-        pace: _displayPace,
-      );
+      _startLiveActivity();
     } else if (state == AppLifecycleState.resumed) {
       // User is back: hide the notification
       LiveActivityService.stopActivity(); 
@@ -109,8 +127,18 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin, Wi
 
   Future<void> _initCache() async {
     final dir = await getTemporaryDirectory();
+    final cachePath = '${dir.path}/map_tiles';
+
+    // Check if the directory exists, if not, create it
+    final cacheDir = Directory(cachePath);
+    if (!await cacheDir.exists()) {
+      await cacheDir.create(recursive: true);
+    }
+
+    if (!mounted) return;
+
     setState(() {
-      _cacheStore = HiveCacheStore('${dir.path}/map_tiles');
+      _cacheStore = HiveCacheStore(cachePath);
     });
   }
 
@@ -207,11 +235,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin, Wi
 
         if (_isWorkoutActive && !_isPaused) {
           // Sync data with Lock Screen on every GPS fix
-          LiveActivityService.updateActivity(
-            time: _elapsedTime,
-            distance: _totalDistance,
-            pace: _displayPace,
-          );
+          _updateLiveActivity();
 
           if (_trackSegments.isNotEmpty && _trackSegments.last.isNotEmpty) {
             double d = Geolocator.distanceBetween(
@@ -285,11 +309,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin, Wi
 
         // Start Live Activity only for iOS
         if (defaultTargetPlatform == TargetPlatform.iOS) {
-          LiveActivityService.startActivity(
-            time: _elapsedTime,
-            distance: _totalDistance,
-            pace: _displayPace,
-          );
+          _startLiveActivity();
         }
       } else {
         _isPaused = !_isPaused;

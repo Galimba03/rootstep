@@ -8,6 +8,8 @@ struct WorkoutAttributes: ActivityAttributes {
         var time: String
         var distance: Double
         var pace: String
+        var startTimeMs: Int64
+        var isPaused: Bool
     }
     var workoutName: String
 }
@@ -65,16 +67,25 @@ struct WorkoutAttributes: ActivityAttributes {
           result(FlutterError(code: "INVALID_ARGS", message: "Invalid arguments", details: nil))
           return
       }
+      
+      let startTimeMs = args["startTimeMs"] as? Int64 ?? Int64(Date().timeIntervalSince1970 * 1000)
+      let isPaused = args["isPaused"] as? Bool ?? false
 
       let attributes = WorkoutAttributes(workoutName: "RootStep Run")
-      let state = WorkoutAttributes.ContentState(time: time, distance: distance, pace: pace)
+      let state = WorkoutAttributes.ContentState(
+          time: time, 
+          distance: distance, 
+          pace: pace, 
+          startTimeMs: startTimeMs, 
+          isPaused: isPaused
+      )
 
       do {
           if #available(iOS 16.2, *) {
               let activity = try Activity<WorkoutAttributes>.request(
                   attributes: attributes,
                   contentState: state,
-                  pushType: nil // Assicurati che sia nil
+                  pushType: nil
               )
               self.currentActivity = activity
           } else {
@@ -107,7 +118,16 @@ struct WorkoutAttributes: ActivityAttributes {
           return
       }
 
-      let state = WorkoutAttributes.ContentState(time: time, distance: distance, pace: pace)
+      let startTimeMs = args["startTimeMs"] as? Int64 ?? Int64(Date().timeIntervalSince1970 * 1000)
+      let isPaused = args["isPaused"] as? Bool ?? false
+
+      let state = WorkoutAttributes.ContentState(
+          time: time, 
+          distance: distance, 
+          pace: pace, 
+          startTimeMs: startTimeMs, 
+          isPaused: isPaused
+      )
 
       Task {
           await activity.update(using: state)
