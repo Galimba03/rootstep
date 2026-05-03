@@ -24,7 +24,7 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
+class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin, WidgetsBindingObserver {
   // Map logic and cache
   LatLng? _currentPosition;
   final MapController _mapController = MapController();
@@ -49,6 +49,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   late Timer _timer;
   String _elapsedTime = "00:00";
 
+  // Variable to keep track of the app state
+  AppLifecycleState _appState = AppLifecycleState.resumed;
+
   @override
   void initState() {
     super.initState();
@@ -56,24 +59,50 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     _initCache();
     _setupLocation();
     
+    // Register the observer
+    WidgetsBinding.instance.addObserver(this);
+    
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_stopwatch.isRunning) {
         setState(() {
           _elapsedTime = _formatDuration(_stopwatch.elapsed);
         });
 
-        // Trigger the Lock Screen / Notification update
-        LiveActivityService.updateActivity(
-          time: _elapsedTime,
-          distance: _totalDistance,
-          pace: _displayPace,
-        );
+        // Update notification ONLY when app is in background
+        if (_appState == AppLifecycleState.paused) {
+          LiveActivityService.updateActivity(
+            time: _elapsedTime,
+            distance: _totalDistance,
+            pace: _displayPace,
+          );
+        }
       }
     });
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _appState = state;
+    });
+
+    if (state == AppLifecycleState.paused && _isWorkoutActive) {
+      // User left the app: Start/Show the custom notification
+      LiveActivityService.startActivity(
+        time: _elapsedTime,
+        distance: _totalDistance,
+        pace: _displayPace,
+      );
+    } else if (state == AppLifecycleState.resumed) {
+      // User is back: hide the notification
+      LiveActivityService.stopActivity(); 
+    }
+  }
+
+  @override
   void dispose() {
+    // Remove the observer
+    WidgetsBinding.instance.removeObserver(this);
     _timer.cancel();
     super.dispose();
   }
@@ -254,12 +283,14 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           _animatedMapMove(_currentPosition!, 17.5);
         }
 
-        // Start Live Activity
-        LiveActivityService.startActivity(
-          time: _elapsedTime,
-          distance: _totalDistance,
-          pace: _displayPace,
-        );
+        // Start Live Activity only for iOS
+        if (defaultTargetPlatform == TargetPlatform.iOS) {
+          LiveActivityService.startActivity(
+            time: _elapsedTime,
+            distance: _totalDistance,
+            pace: _displayPace,
+          );
+        }
       } else {
         _isPaused = !_isPaused;
         if (_isPaused) {
