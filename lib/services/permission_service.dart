@@ -1,18 +1,25 @@
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class PermissionService {
   static Future<void> requestInitialPermissions() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+    // 1. Request Notification Permission (Android 13+)
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      PermissionStatus notificationStatus = await Permission.notification.status;
+      if (notificationStatus.isDenied) {
+        await Permission.notification.request();
+      }
+    }
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    // 2. Request Location Permissions
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       debugPrint('Location services are disabled.');
       return;
     }
 
-    permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       
