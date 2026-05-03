@@ -28,6 +28,23 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 
+# Xcode user-specific files
+**/xcuserdata/
+**/DerivedData/
+# Xcode additional caches
+**/build/
+*.hmap
+*.ipa
+*.metadata
+
+# CocoaPods
+ios/Pods/
+ios/.lsbrain/
+
+# Backup e file temporanei
+*.moved-aside
+*.xcuserstate
+
 # IDE and personal configs
 .idea/
 *.iml
