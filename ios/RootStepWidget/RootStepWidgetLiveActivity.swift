@@ -91,7 +91,7 @@ struct RootStepWidgetLiveActivity: Widget {
             
         } dynamicIsland: { context in
             DynamicIsland {
-                // Expanded UI (when you long-press the Dynamic Island)
+                // Expanded UI (quando tieni premuto a lungo) - Invariata, va bene così
                 DynamicIslandExpandedRegion(.leading) {
                     HStack {
                         Image(systemName: "leaf.fill").foregroundColor(.green)
@@ -114,19 +114,29 @@ struct RootStepWidgetLiveActivity: Widget {
                             .foregroundColor(.gray)
                     }
                 }
-            } compactLeading: {
-                // Compact UI (small icon on the left)
-                Image(systemName: "leaf.fill").foregroundColor(.green)
+            } compactLeading: { 
+                // Show the icon AND kilometres
+                HStack(spacing: 4) {
+                    Image(systemName: "leaf.fill")
+                        .foregroundColor(.green)
+                    Text(String(format: "%.2f km", context.state.distance / 1000))
+                        .monospacedDigit()
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                }
             } compactTrailing: {
-                // Compact UI (small time on the right)
+                // Compact UI (small time on the right) - Invariata, ma ora lo spazio è più bilanciato
                 if context.state.isPaused {
-                    Text(context.state.time).monospacedDigit().foregroundColor(.green)
+                    Text(context.state.time)
+                        .monospacedDigit()
+                        .foregroundColor(.green)
                 } else {
                     let startDate = Date(timeIntervalSince1970: Double(context.state.startTimeMs) / 1000.0)
-                    Text(startDate, style: .timer).monospacedDigit().foregroundColor(.green)
+                    Text(startDate, style: .timer)
+                        .monospacedDigit()
+                        .foregroundColor(.green)
                 }
             } minimal: {
-                // Minimal UI (when multiple apps are active in Dynamic Island)
+                // Minimal UI (quando ci sono più app attive nella Dynamic Island) - Invariata
                 Image(systemName: "leaf.fill").foregroundColor(.green)
             }
         }

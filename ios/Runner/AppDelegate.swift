@@ -68,10 +68,11 @@ struct WorkoutAttributes: ActivityAttributes {
           return
       }
       
+      // Sent data for native cronometer.
       let startTimeMs = args["startTimeMs"] as? Int64 ?? Int64(Date().timeIntervalSince1970 * 1000)
       let isPaused = args["isPaused"] as? Bool ?? false
 
-      let attributes = WorkoutAttributes(workoutName: "RootStep Run")
+      // New state object.
       let state = WorkoutAttributes.ContentState(
           time: time, 
           distance: distance, 
@@ -79,6 +80,18 @@ struct WorkoutAttributes: ActivityAttributes {
           startTimeMs: startTimeMs, 
           isPaused: isPaused
       )
+
+      // Anti-duplication of the widget in the lock screen.
+      if let activity = self.currentActivity as? Activity<WorkoutAttributes> {
+          Task {
+              await activity.update(using: state)
+              print("LIVE ACTIVITY: Evitata duplicazione, aggiornata activity esistente.")
+              result(nil)
+          }
+          return
+      }
+
+      let attributes = WorkoutAttributes(workoutName: "RootStep Run")
 
       do {
           if #available(iOS 16.2, *) {

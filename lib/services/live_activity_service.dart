@@ -20,7 +20,19 @@ class LiveActivityService {
         'isPaused': isPaused,
       });
     } on PlatformException catch (e) {
-      if (e.code != 'NO_ACTIVITY') debugPrint("Start error: ${e.message}");
+      // If the Live Activity was accidentally deleted, 
+      // it's now recreated
+      if (e.code == 'NO_ACTIVITY') {
+        await startActivity(
+          time: time,
+          distance: distance,
+          pace: pace,
+          startTimeMs: startTimeMs,
+          isPaused: isPaused,
+        );
+      } else {
+        debugPrint("Update error: ${e.message}");
+      }
     }
   }
 
