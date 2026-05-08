@@ -79,6 +79,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
+		<string>remote-notification</string>
 	</array>
 
 	<!-- For live activities in the lock screen -->

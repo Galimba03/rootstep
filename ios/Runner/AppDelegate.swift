@@ -83,12 +83,16 @@ struct WorkoutAttributes: ActivityAttributes {
 
       // Anti-duplication of the widget in the lock screen.
       if let activity = self.currentActivity as? Activity<WorkoutAttributes> {
-          Task {
-              await activity.update(using: state)
-              print("LIVE ACTIVITY: Evitata duplicazione, aggiornata activity esistente.")
-              result(nil)
+          if activity.activityState == .active {
+              Task {
+                  await activity.update(using: state)
+                  result(nil)
+              }
+              return
+          } else {
+              // Activity deleted from the user. Empty the variable
+              self.currentActivity = nil
           }
-          return
       }
 
       let attributes = WorkoutAttributes(workoutName: "RootStep Run")
@@ -128,6 +132,12 @@ struct WorkoutAttributes: ActivityAttributes {
 
       guard let activity = self.currentActivity as? Activity<WorkoutAttributes> else {
           result(FlutterError(code: "NO_ACTIVITY", message: "No active Live Activity", details: nil))
+          return
+      }
+
+      if activity.activityState != .active {
+          self.currentActivity = nil // Clean memory
+          result(FlutterError(code: "NO_ACTIVITY", message: "Activity was killed by user", details: nil))
           return
       }
 

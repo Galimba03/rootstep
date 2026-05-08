@@ -93,8 +93,8 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin, Wi
           _elapsedTime = _formatDuration(_stopwatch.elapsed);
         });
 
-        // Update notification ONLY when app is in background
-        if (_appState == AppLifecycleState.paused) {
+        // Update Android notification only in background
+        if (_appState == AppLifecycleState.paused && defaultTargetPlatform == TargetPlatform.android) {
           _updateLiveActivity();
         }
       }
@@ -108,12 +108,21 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin, Wi
       _appState = state;
     });
 
-    if (state == AppLifecycleState.paused && _isWorkoutActive) {
-      // User left the app: Start/Show the custom notification
-      _startLiveActivity();
-    } else if (state == AppLifecycleState.resumed) {
-      // User is back: hide the notification
-      LiveActivityService.stopActivity(); 
+    if (_isWorkoutActive) {
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        if (state == AppLifecycleState.paused) {
+          // User left the app: Start/Show the custom notification
+          _startLiveActivity();
+        } else if (state == AppLifecycleState.resumed) {
+          // User is back: hide the notification
+          LiveActivityService.stopActivity(); 
+        }
+      } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+        if (state == AppLifecycleState.resumed && !_isPaused) {
+          // Resurrect iOS Live Activity if accidentally dismissed
+          _updateLiveActivity();
+        }
+      }
     }
   }
 
